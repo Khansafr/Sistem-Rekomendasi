@@ -103,11 +103,14 @@ Berikut adalah ringkasan variabel yang terdapat pada masing-masing dataset:
 * Merek seperti Google (3 produk) dan beberapa brand lain seperti Asus, Oppo, Vivo, dan Sony hanya memiliki 1 produk masing-masing, menunjukkan kehadiran yang lebih kecil dalam dataset.
 
 ![Distribusi Sistem Operasi](https://github.com/user-attachments/assets/05293211-4124-423d-a5c4-176d16fd0ccc)
+
 **Insight:**
 * Sebagian besar ponsel dalam dataset menggunakan Android, yaitu sebanyak 27 unit.
 * Sedangkan ponsel dengan iOS hanya berjumlah 6 unit
 
 ![Distribusi Harga Handphone](https://github.com/user-attachments/assets/80768f36-ba29-42f8-af60-7942d51017db)
+
+**Insight:**
 * Harga ponsel paling sering muncul adalah 699 (sebanyak 3 unit), diikuti oleh 899 (2 unit).
 * Sisanya, harga-harga lain muncul masing-masing 1 kali, menunjukkan variasi harga yang cukup luas dan tidak terlalu banyak produk dengan harga sama.
 * Harga termurah adalah 129, dan harga tertinggi mencapai 1998.
@@ -117,6 +120,7 @@ Berikut adalah ringkasan variabel yang terdapat pada masing-masing dataset:
 **Eksplorasi Dataset Rating (ratings)**
 
 ![Distribusi Rating oleh Pengguna](https://github.com/user-attachments/assets/d7336394-63e7-49ef-b056-9a688d8605d7)
+
 **Insight:**
 * Rating paling banyak diberikan pada nilai 8 (195 kali), diikuti 7 (169 kali) dan 10 (130 kali).
 * Rating rendah seperti 1 juga cukup banyak (74 kali), menunjukkan variasi preferensi pengguna.
@@ -124,6 +128,7 @@ Berikut adalah ringkasan variabel yang terdapat pada masing-masing dataset:
 * Secara umum, rating cenderung condong ke nilai tengah atas (7-10), mengindikasikan sebagian besar pengguna cukup puas dengan produk.
 
 ![Jumlah Rating per Produk](https://github.com/user-attachments/assets/fc2c85e9-0c96-4862-afed-24e37fb0621f)
+
 **Insight:**
 * Jumlah rating tiap produk bervariasi antara 20 sampai 41.
 * Produk dengan cellphone_id 30 paling banyak mendapat rating (41), artinya paling populer.
@@ -133,6 +138,7 @@ Berikut adalah ringkasan variabel yang terdapat pada masing-masing dataset:
 **Eksplorasi Dataset Rating (users)**
 
 ![Jumlah Kemunculan Usia](https://github.com/user-attachments/assets/5bd83cd7-fbd7-43bb-8edd-4cb6fc4fe18a)
+
 **Insight:**
 * Sebagian besar user berumur antara 25 hingga 50 tahun.
 * Umur 25 dan 32 tahun muncul paling banyak, dengan masing-masing 12 dan 10 kemunculan.
@@ -140,11 +146,13 @@ Berikut adalah ringkasan variabel yang terdapat pada masing-masing dataset:
 * Data ini bisa membantu segmentasi pengguna berdasarkan usia dalam analisis atau rekomendasi.
 
 ![Distribusi Gender Pengguna](https://github.com/user-attachments/assets/12cab826-cf92-484b-8d6f-f18672aaec33)
+
 **Insight:**
 * Mayoritas pengguna terdiri dari laki-laki (50) dan perempuan (46), distribusinya cukup seimbang.
 * Terdapat 3 data yang belum diisi atau default dengan label "-Select Gender-".
 
 ![Distribusi Pekerjaan (Occupation) Pengguna](https://github.com/user-attachments/assets/55501cfe-19d4-4b20-ad93-95bdf4d73093)
+
 **Insight:**
 * Terdapat 45 jenis pekerjaan unik dengan variasi cukup beragam.
 * Pekerjaan dengan jumlah terbanyak adalah manager (18), diikuti information technology (12) dan it (6).
