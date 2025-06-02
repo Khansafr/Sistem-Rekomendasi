@@ -36,8 +36,6 @@ Dengan memanfaatkan teknik tersebut, sistem rekomendasi dapat memberikan rekomen
 
 Dataset yang digunakan berasal dari Kaggle dengan nama *Cellphones Recommendations* ([https://www.kaggle.com/datasets/meirnizri/cellphones-recommendations](https://www.kaggle.com/datasets/meirnizri/cellphones-recommendations)). Dataset ini terdiri dari tiga file utama, yaitu data handphone, data rating pengguna, dan data profil pengguna.
 
-Tentu! Berikut adalah contoh **bagian laporan** yang bisa kamu masukkan ke dalam dokumen penelitian atau laporan proyek kamu, dengan gaya formal dan sistematis:
-
 ### Deskripsi Dataset
 
 Dataset yang digunakan dalam proyek ini terdiri dari tiga file utama yang saling berhubungan, yaitu:
