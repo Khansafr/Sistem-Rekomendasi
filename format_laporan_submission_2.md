@@ -163,76 +163,121 @@ Berikut adalah ringkasan variabel yang terdapat pada masing-masing dataset:
 
 ## Data Preparation
 
-Pada tahap ini dilakukan beberapa proses persiapan data agar data siap digunakan untuk pembangunan model rekomendasi. Tahapan yang dilakukan meliputi penggabungan dataset, pembersihan data, transformasi, dan encoding.
+Persiapan data merupakan tahap penting agar dataset siap digunakan untuk membangun model rekomendasi yang akurat dan andal. Berikut adalah tahapan yang dilakukan secara berurutan:
 
 ### 1. Penggabungan Dataset
 
-Data rating, data handphone, dan data pengguna digabungkan menjadi satu dataframe dengan menggunakan `merge` berdasarkan `cellphone_id` dan `user_id`.
+Data rating digabungkan dengan data handphone berdasarkan `cellphone_id`, kemudian hasilnya digabung kembali dengan data pengguna berdasarkan `user_id`.
 
-**Alasan:** Menggabungkan data agar semua informasi yang relevan (spesifikasi handphone, profil pengguna, dan rating) berada dalam satu tabel untuk analisis dan pemodelan.
+**Alasan:** Mengintegrasikan data rating, spesifikasi handphone, dan profil pengguna dalam satu tabel agar analisis dan pemodelan menjadi lebih komprehensif.
 
-### 2. Pengecekan dan Penghapusan Missing Values
+### 2. Pengecekan Missing Values
 
-Baris data yang mengandung nilai kosong (`null`) dihapus menggunakan `dropna()`.
+Dilakukan pengecekan terhadap data yang memiliki nilai kosong (missing values) dan baris tersebut dihapus menggunakan `dropna()`.
 
-**Alasan:** Missing values dapat menyebabkan error pada model dan menurunkan kualitas prediksi, sehingga data harus bersih.
+**Alasan:** Memastikan data yang digunakan bersih dan bebas dari nilai kosong yang dapat menyebabkan error saat pemodelan.
 
-### 3. Filtering Rating Tidak Valid
+### 3. Filter Rating Tidak Valid
 
-Data rating dengan nilai tidak valid (`rating = 18`) dihapus karena merupakan outlier atau kesalahan input.
+Menghapus baris data dengan rating tidak valid, misalnya rating bernilai 18 yang merupakan outlier atau kesalahan input.
 
-**Alasan:** Memastikan data rating valid dan konsisten agar model belajar dari data yang representatif.
+**Alasan:** Menjaga kualitas data dan validitas rating agar model belajar dari data yang benar.
 
-### 4. Pembersihan Kolom `occupation`
+### 4. Normalisasi Kolom Pekerjaan (`occupation`)
 
-Melakukan normalisasi teks pada kolom pekerjaan pengguna dengan mengubah semua huruf menjadi huruf kecil dan memperbaiki kesalahan ketik (`healthare` menjadi `healthcare` dan `it` menjadi `information technology`).
+Mengubah seluruh teks di kolom `occupation` menjadi huruf kecil dan memperbaiki kesalahan penulisan (misal `'healthare'` menjadi `'healthcare'`).
 
-**Alasan:** Konsistensi data kategori memudahkan analisis dan mencegah duplikasi kategori akibat perbedaan penulisan.
+**Alasan:** Menjaga konsistensi data kategori agar tidak terjadi duplikasi kategori akibat perbedaan penulisan.
 
-### 5. Penghapusan Duplikasi Data
+### 5. Penghapusan Data Duplikat
 
-Data handphone dideduplikasi berdasarkan `cellphone_id` untuk mendapatkan data unik tiap produk.
+Menghapus baris yang duplikat berdasarkan `cellphone_id` untuk mendapatkan data handphone yang unik.
 
-**Alasan:** Mencegah pengaruh ganda dari entri yang sama dalam analisis.
+**Alasan:** Menghindari bias akibat data yang berulang.
 
 ### 6. Ekstraksi Data Utama Handphone
 
-Membuat dataframe baru yang berisi fitur utama handphone seperti `brand`, `model`, dan `operating_system`.
+Membuat DataFrame baru `phone_new` yang berisi fitur penting seperti `cellphone_id`, `brand`, `model`, dan `operating_system`.
 
-**Alasan:** Memisahkan data fitur utama untuk memudahkan pemodelan berbasis konten.
+**Alasan:** Menyiapkan data handphone dengan fitur inti untuk memudahkan analisis dan pembuatan model berbasis konten.
 
-### 7. Persiapan Data untuk Collaborative Filtering
+### 7. Encoding User dan Handphone
 
-Pada data rating yang sudah dibersihkan, dilakukan proses encoding terhadap `user_id` dan `cellphone_id` menjadi indeks numerik (`user`, `cellphone`) untuk keperluan pemodelan. Nilai rating juga dinormalisasi ke rentang 0 sampai 1. Data diacak (shuffled) dan dibagi menjadi data latih dan validasi dengan perbandingan 80:20.
+Mengonversi `user_id` dan `cellphone_id` menjadi angka berurutan menggunakan mapping dictionary.
 
-**Alasan:** Encoding diperlukan agar model dapat mengelola data kategori dalam format numerik. Normalisasi rating membantu model lebih stabil saat training. Pembagian data latih dan validasi digunakan untuk mengukur performa model secara objektif.
+**Alasan:** Membuat data numerik yang dapat diproses oleh model collaborative filtering berbasis neural network.
+
+### 8. Konversi dan Normalisasi Rating
+
+Mengubah tipe data rating menjadi float dan melakukan normalisasi ke rentang 0 hingga 1 agar nilai rating seragam untuk pelatihan model.
+
+**Alasan:** Mempermudah proses pembelajaran model dengan rentang nilai yang konsisten.
+
+### 9. Pengacakan Data (Shuffle)
+
+Data diacak secara acak menggunakan `sample(frac=1, random_state=42)` untuk memastikan distribusi data acak dan reproducible.
+
+**Alasan:** Menghindari bias model akibat pola urutan data yang terstruktur.
+
+### 10. Pembagian Data Train dan Validation
+
+Membagi data menjadi 80% untuk pelatihan (training) dan 20% untuk validasi (validation).
+
+**Alasan:** Mengukur performa model dengan data yang belum pernah dilihat saat pelatihan.
+
+### 11. Penerapan TF-IDF pada Kolom Brand
+
+Menggunakan `TfidfVectorizer` untuk mengubah teks brand handphone menjadi representasi numerik berbasis TF-IDF.
+
+**Alasan:** Menangkap pentingnya setiap kata (brand) dalam data untuk fitur model Content-Based Filtering.
+
+### 12. Membuat DataFrame Matriks TF-IDF
+
+Mengubah hasil matriks TF-IDF yang berbentuk sparse matrix menjadi DataFrame dengan kolom fitur kata unik dan indeks model handphone.
+
+**Alasan:** Memudahkan analisis dan pemrosesan data numerik dari teks untuk model rekomendasi.
 
 ---
 
 ## Modeling
 
-Tahap modeling dilakukan untuk membangun sistem rekomendasi handphone berdasarkan data yang telah dipersiapkan sebelumnya. Dua pendekatan digunakan untuk menyajikan rekomendasi, yaitu:
+### 1. Content-Based Filtering
 
-### 1. Content-Based Filtering menggunakan TF-IDF dan Cosine Similarity
-
-Pendekatan pertama memanfaatkan informasi fitur produk, dalam hal ini `brand` handphone, untuk menghitung kemiripan antar model menggunakan teknik TF-IDF (Term Frequency-Inverse Document Frequency) dan cosine similarity.
+Pada tahap modeling, sistem rekomendasi handphone dibangun dengan memanfaatkan hasil ekstraksi fitur dari tahap sebelumnya, yaitu matriks TF-IDF yang merepresentasikan brand dari masing-masing model handphone. Pendekatan yang digunakan adalah **Content-Based Filtering** dengan perhitungan kemiripan antar produk menggunakan **Cosine Similarity**.
 
 * **Proses:**
 
-  * Menghitung matriks TF-IDF dari kolom `brand` untuk merepresentasikan setiap model handphone.
-  * Menghitung cosine similarity antar model handphone berdasarkan TF-IDF.
-  * Menyajikan rekomendasi top-N model handphone yang paling mirip berdasarkan kemiripan cosine terhadap model input.
+  * Memeriksa keberadaan model input pada matriks similarity, untuk menghindari error jika model tidak ditemukan.
+  * Mengambil nilai kemiripan (cosine similarity) antara model input dengan semua model lain, kemudian menghapus nilai kemiripan model terhadap dirinya sendiri.
+  * Mengurutkan nilai kemiripan secara menurun dan memilih sejumlah `k` model teratas sebagai rekomendasi.
+  * Menggabungkan hasil rekomendasi dengan data tambahan seperti brand dan sistem operasi agar output rekomendasi lebih informatif dan mudah dipahami oleh pengguna.
 
 * **Kelebihan:**
 
-  * Mudah diimplementasikan dan tidak memerlukan data rating yang lengkap.
-  * Rekomendasi bersifat explainable, karena didasarkan pada fitur yang jelas (brand).
-  * Cocok untuk produk baru yang belum memiliki rating (cold-start problem pada user-item rating).
+  * **Explainable**: Rekomendasi didasarkan pada kemiripan brand yang dapat dijelaskan secara intuitif kepada pengguna.
+  * **Efisien**: Tidak membutuhkan data rating pengguna, sehingga dapat digunakan walaupun data pengguna minim.
+  * **Cold-start problem**: Bisa merekomendasikan model baru yang belum memiliki data interaksi pengguna.
 
 * **Kekurangan:**
 
-  * Tidak memperhitungkan preferensi pengguna secara eksplisit.
-  * Terbatas pada fitur yang digunakan, sehingga jika fitur yang dipakai sedikit (misal hanya brand), rekomendasi bisa kurang variatif.
+  * Terbatas pada fitur brand dan operating system saja, sehingga variasi rekomendasi bisa kurang beragam.
+  * Tidak mempertimbangkan preferensi eksplisit pengguna.
+
+#### Contoh Hasil Similarity Model Handphone
+
+Menghitung tingkat kemiripan antar model handphone menggunakan metode *cosine similarity*. Matriks similarity ini digunakan untuk merekomendasikan model handphone yang mirip berdasarkan kemiripan brand dan sistem operasi.
+
+Berikut adalah contoh hasil similarity untuk beberapa model iPhone:
+
+| Model             | Brand | Operating System | Similarity |
+| ----------------- | ----- | ---------------- | ---------- |
+| iPhone XR         | Apple | iOS              | 1.0        |
+| iPhone 13 Pro Max | Apple | iOS              | 1.0        |
+| iPhone SE (2022)  | Apple | iOS              | 1.0        |
+| iPhone 13 Mini    | Apple | iOS              | 1.0        |
+| iPhone 13         | Apple | iOS              | 1.0        |
+
+Nilai similarity 1.0 menunjukkan bahwa model-model tersebut memiliki kemiripan yang sangat tinggi berdasarkan fitur brand dan sistem operasi yang identik. Nilai ini mencerminkan bahwa model-model tersebut berasal dari merek dan platform yang sama sehingga sangat relevan untuk direkomendasikan sebagai alternatif.
 
 ### 2. Collaborative Filtering menggunakan Neural Network (RecommenderNet)
 
@@ -260,23 +305,107 @@ Pendekatan kedua menggunakan teknik collaborative filtering dengan model embeddi
 * **Proses pelatihan:**
   Model dilatih selama maksimal 100 epoch dengan batch size 8, menggunakan early stopping jika tidak ada perbaikan val\_loss selama 5 epoch berturut-turut.
 
+Berikut contoh penulisan laporan rekomendasi yang sudah disesuaikan dengan data User ID: 114 yang kamu berikan:
+
+
+#### Contoh Output Rekomendasi untuk User ID: 114
+
+**Handphone dengan rating tertinggi oleh user:**
+
+| Brand   | Model            |
+| ------- | ---------------- |
+| Samsung | Galaxy S22 Ultra |
+| Oppo    | Find X5 Pro      |
+| Xiaomi  | 12 Pro           |
+| Xiaomi  | 11T Pro          |
+| Apple   | iPhone 13 Pro    |
+
+**Top 10 Rekomendasi Handphone untuk user ini:**
+
+| Brand    | Model               |
+| -------- | ------------------- |
+| Samsung  | Galaxy A53          |
+| Google   | Pixel 6             |
+| Google   | Pixel 6 Pro         |
+| Apple    | iPhone 13           |
+| Google   | Pixel 6a            |
+| Apple    | iPhone XR           |
+| Asus     | Zenfone 8           |
+| Motorola | Moto G Power (2022) |
+| Samsung  | Galaxy Z Fold 3     |
+| Samsung  | Galaxy Z Flip 3     |
+
+Output ini menunjukkan rekomendasi personalisasi yang dihasilkan oleh model neural network berdasarkan pola rating dan preferensi user tersebut.
+
 ---
 
 ## Evaluation
 
-Pada proyek sistem rekomendasi ini, metrik evaluasi yang digunakan adalah **Root Mean Squared Error (RMSE)**. RMSE adalah metrik yang umum digunakan untuk mengukur kualitas model prediksi kontinu, khususnya pada permasalahan regresi dan rekomendasi dengan rating numerik.
+### Evaluasi Content-Based Filtering
 
-### Penjelasan Metrik RMSE
+#### Metrik Evaluasi untuk Content-Based Filtering
+
+Untuk mengukur kualitas rekomendasi yang dihasilkan oleh sistem Content-Based Filtering, digunakan metrik berbasis **ranking** seperti:
+
+##### 1. Precision\@K
+
+* **Definisi:** Proporsi rekomendasi yang relevan di antara K rekomendasi teratas.
+* **Interpretasi:** Seberapa akurat rekomendasi dalam menampilkan item yang benar-benar disukai pengguna.
+* **Rumus:**
+
+$$
+Precision@K = \frac{\text{Jumlah item relevan dalam top K rekomendasi}}{K}
+$$
+
+##### 2. Recall\@K
+
+* **Definisi:** Proporsi item relevan yang berhasil direkomendasikan di antara semua item relevan pengguna.
+* **Interpretasi:** Seberapa banyak preferensi pengguna yang berhasil "tertangkap" oleh sistem dalam rekomendasi top K.
+* **Rumus:**
+
+$$
+Recall@K = \frac{\text{Jumlah item relevan dalam top } K \text{ rekomendasi}}{\text{Jumlah total item relevan pengguna}}
+$$
+
+##### 3. F1-score\@K (opsional)
+
+* Kombinasi harmonis antara Precision\@K dan Recall\@K, digunakan bila ingin keseimbangan antara keduanya.
+
+### Contoh Hasil Evaluasi untuk User 114
+
+* **Relevant Models (user rating ≥ threshold):** 10 model
+* **Recommended Models (top 10 rekomendasi berdasarkan 'iPhone 13 Pro'):** 10 model
+
+| Metrik       | Nilai | Interpretasi                                                               |
+| ------------ | ----- | -------------------------------------------------------------------------- |
+| Precision\@5 | 0.20  | Dari 5 rekomendasi teratas, 1 model adalah relevan (20%).                  |
+| Recall\@5    | 0.10  | Dari 10 model relevan, hanya 1 model masuk ke 5 rekomendasi teratas (10%). |
+
+Kesimpulan:
+
+Sistem rekomendasi cukup akurat dalam memberikan beberapa rekomendasi tepat sasaran, namun belum berhasil menangkap banyak preferensi pengguna secara keseluruhan.
+
+### Evaluasi Collaborative Filtering
+
+Untuk model Collaborative Filtering yang memprediksi rating numerik, digunakan metrik **Root Mean Squared Error (RMSE)**.
+
+#### Penjelasan Metrik RMSE
 
 RMSE dihitung sebagai akar kuadrat dari rata-rata kuadrat selisih antara nilai prediksi dan nilai aktual:
 
-<img width="460" alt="Rumus RMSE" src="https://github.com/user-attachments/assets/fee2ffee-b072-4463-a088-698e0711044b" />
+$$
+RMSE = \sqrt{\frac{1}{N} \sum_{i=1}^N (y_i - \hat{y}_i)^2}
+$$
 
-**RMSE mengukur seberapa besar kesalahan prediksi model secara rata-rata, dalam satuan yang sama dengan nilai asli.** Nilai RMSE yang lebih kecil menunjukkan prediksi model yang lebih akurat dan lebih dekat ke nilai sebenarnya.
+Dimana:
 
-### Hasil Evaluasi Model
+* $y_i$ adalah rating asli
+* $\hat{y}_i$ adalah rating prediksi
+* $N$ adalah jumlah data
 
-Evaluasi dilakukan pada data training dan data validasi untuk mengukur kemampuan model dalam mempelajari pola (fit) dan kemampuannya dalam menggeneralisasi ke data baru (validasi).
+RMSE mengukur seberapa besar kesalahan prediksi secara rata-rata. Nilai RMSE yang lebih kecil menunjukkan prediksi yang lebih akurat.
+
+#### Hasil Evaluasi Model
 
 ```python
 # Prediksi rating pada data training dan hitung RMSE
@@ -292,16 +421,21 @@ print(f"RMSE Train     : {rmse_train:.4f}")
 print(f"RMSE Validation: {rmse_val:.4f}")
 ```
 
-### RMSE Plot
-![RMSE plot](https://github.com/user-attachments/assets/824a2b25-0def-4611-b4ad-3f5f3887c211)
+Output:
 
-### Interpretasi Hasil
+```
+RMSE Train     : 0.0643
+RMSE Validation: 0.2746
+```
 
-* **RMSE Train** yang rendah menunjukkan model dapat mempelajari pola rating dengan baik pada data training.
-* **RMSE Validation** yang tidak jauh berbeda dari RMSE train menunjukkan model memiliki kemampuan generalisasi yang baik, tidak overfitting.
-* Jika RMSE validation jauh lebih tinggi dari RMSE train, maka model cenderung overfitting, artinya model terlalu cocok dengan data training dan kurang baik pada data baru.
+#### Interpretasi Hasil RMSE
+
+* RMSE pada data training yang rendah (0.0643) menunjukkan model dapat mempelajari pola rating dengan baik.
+* RMSE pada data validasi (0.2746) relatif lebih tinggi namun masih cukup baik, menandakan model masih memiliki kemampuan generalisasi, meskipun ada potensi overfitting ringan.
+* Perbedaan RMSE yang tidak terlalu besar antara training dan validasi menunjukkan model cukup stabil.
 
 ---
+
 ### Referensi
 Herlocker, J. L., Konstan, J. A., Terveen, L. G., & Riedl, J. T. (2004). Evaluating collaborative filtering recommender systems. ACM Transactions on Information Systems (TOIS), 22(1), 5–53.
 https://doi.org/10.1145/963770.963772
